@@ -3,6 +3,7 @@ package com.mimacom.taskList.service;
 import com.mimacom.taskList.exception.ResourceNotFoundException;
 import com.mimacom.taskList.model.Task;
 import com.mimacom.taskList.repositories.TaskRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,10 +16,11 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class TaskService {
 
-    @Autowired
-    private TaskRepository taskRepository;
+
+    private final TaskRepository taskRepository;
 
 
     public Task createTask(Task task) {

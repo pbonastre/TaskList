@@ -4,6 +4,8 @@ package com.mimacom.taskList.controller;
 import com.mimacom.taskList.model.Task;
 import com.mimacom.taskList.service.TaskService;
 import io.swagger.annotations.*;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +16,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
+@RequiredArgsConstructor
+@Slf4j
 @Api(value= "taskListController", description = "There are XX microservices to create, update and delete tasks")
 public class TaskListController {
 
-    @Autowired
-    private TaskService taskService;
+    private final TaskService taskService;
 
     @ApiOperation(value = "", notes = "Creates a new Task object for the current user. ", response = Task.class, tags = {})
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Task created successfully", response = Task.class)})

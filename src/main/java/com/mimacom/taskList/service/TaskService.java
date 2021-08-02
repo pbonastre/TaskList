@@ -43,13 +43,12 @@ public class TaskService {
         }
     }
 
-    public Task setTaskAsFinish(long taskId, String finishDate) throws ParseException {
+    public void setTaskAsFinish(long taskId, String finishDate) throws ParseException {
         Optional<Task> existingTask = taskRepository.findById(taskId);
         if(existingTask.isPresent()) {
             Date formatFinishDate = new SimpleDateFormat("yyyyMMdd").parse(finishDate);
             this.taskRepository.updateFinish(taskId,formatFinishDate);
             this.taskRepository.flush();
-            return taskRepository.findById(taskId).get();
         } else {
             throw new ResourceNotFoundException("Record not found with id : " + taskId);
         }

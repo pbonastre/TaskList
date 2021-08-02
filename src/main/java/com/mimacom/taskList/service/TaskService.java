@@ -4,7 +4,6 @@ import com.mimacom.taskList.exception.ResourceNotFoundException;
 import com.mimacom.taskList.model.Task;
 import com.mimacom.taskList.repositories.TaskRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,20 +17,17 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class TaskService {
-
-
     private final TaskRepository taskRepository;
 
-
     public Task createTask(Task task) {
-       return taskRepository.save(new Task(task.getTitle(), task.getDescription(),task.getFinish()));
+        return taskRepository.save(new Task(task.getTitle(), task.getDescription(), task.getFinish()));
     }
 
     public Task updateTask(Task task) {
         Optional<Task> existingTask = this.taskRepository.findById(task.getId());
 
-        if(existingTask.isPresent()) {
-            Task exTask =existingTask.get();
+        if (existingTask.isPresent()) {
+            Task exTask = existingTask.get();
             exTask.setDescription(task.getDescription());
             exTask.setTitle(task.getTitle());
             exTask.setFinish(task.getFinish());
@@ -44,9 +40,9 @@ public class TaskService {
 
     public void setTaskAsFinish(Long taskId, String finishDate) throws ParseException {
         Optional<Task> existingTask = taskRepository.findById(taskId);
-        if(existingTask.isPresent()) {
+        if (existingTask.isPresent()) {
             Date formatFinishDate = new SimpleDateFormat("yyyyMMdd").parse(finishDate);
-            this.taskRepository.updateFinish(taskId,formatFinishDate);
+            this.taskRepository.updateFinish(taskId, formatFinishDate);
             this.taskRepository.flush();
         } else {
             throw new ResourceNotFoundException("Record not found with id : " + taskId);
@@ -58,7 +54,6 @@ public class TaskService {
     }
 
     public Task getTasktById(Long taskId) {
-
         Optional<Task> existingTask = this.taskRepository.findById(taskId);
 
         if (existingTask.isPresent()) {
@@ -69,7 +64,7 @@ public class TaskService {
     }
 
     public void deleteTask(Long taskId) {
-        Optional <Task> existingTask = this.taskRepository.findById(taskId);
+        Optional<Task> existingTask = this.taskRepository.findById(taskId);
 
         if (existingTask.isPresent()) {
             this.taskRepository.delete(existingTask.get());
@@ -77,6 +72,4 @@ public class TaskService {
             throw new ResourceNotFoundException("Record not found with id : " + taskId);
         }
     }
-
-
 }

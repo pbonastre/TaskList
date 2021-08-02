@@ -37,7 +37,6 @@ public class TaskServiceTest {
         var task3 = new Task(3L, "title3", "description3", null);
         taskList = Arrays.asList(task1, task2, task3);
         lenient().doReturn(Optional.of(task1)).when(taskRepository).findById(any());
-
     }
 
     @Test
@@ -49,14 +48,14 @@ public class TaskServiceTest {
 
     @Test
     public void updateTask() {
-        Task newT = new Task("title2","description2");
+        Task newT = new Task("title2", "description2");
         Task updatedTask = taskService.updateTask(newT);
         Assertions.assertEquals("title2", updatedTask.getTitle());
     }
 
     @Test
     public void setTaskAsFinish() {
-       Assertions.assertDoesNotThrow(() -> taskService.setTaskAsFinish(1L, "20210225"));
+        Assertions.assertDoesNotThrow(() -> taskService.setTaskAsFinish(1L, "20210225"));
     }
 
     @Test
@@ -77,7 +76,6 @@ public class TaskServiceTest {
     }
 
     public Task getTasktById(Long taskId) {
-
         Optional<Task> existingTask = this.taskRepository.findById(taskId);
 
         if (existingTask.isPresent()) {

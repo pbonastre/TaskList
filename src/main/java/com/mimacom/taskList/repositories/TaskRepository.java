@@ -17,9 +17,7 @@ import java.util.Optional;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task,Long> {
-  List<Task> findAll();
 
-  Optional<Task> findByTitle(String title);
 
   @Modifying
   @Query("Update Task t SET t.finish=:finish WHERE t.id=:id")

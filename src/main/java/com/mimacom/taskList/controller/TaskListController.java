@@ -1,6 +1,7 @@
 package com.mimacom.taskList.controller;
 
 
+import com.mimacom.taskList.exception.ResourceNotFoundException;
 import com.mimacom.taskList.model.Task;
 import com.mimacom.taskList.service.TaskService;
 import io.swagger.annotations.*;
@@ -25,7 +26,7 @@ public class TaskListController {
 
     @ApiOperation(value = "", notes = "Creates a new Task object for the current user. ", response = Task.class, tags = {})
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Task created successfully", response = Task.class)})
-    @PostMapping("/task")
+    @PostMapping("")
     public ResponseEntity<Task> createTask(
             @ApiParam(value = "Task to add to the list", required = true)
             @RequestBody Task task){
@@ -34,15 +35,15 @@ public class TaskListController {
 
     @ApiOperation(value = "", notes = "Gets the list of Task objects for the current user. ", response = Task.class, responseContainer = "List", tags = {})
     @ApiResponses(value = {@ApiResponse(code = 200, message = "An array of Task objects", response = Task.class)})
-    @GetMapping("/tasks")
+    @GetMapping("")
     public ResponseEntity<List<Task>> getAllTasks(){
         return ResponseEntity.ok().body(taskService.getAllTasks());
     }
 
     @ApiOperation(value = "", notes = "Updates an existing Task object. ", response = Task.class, tags = {})
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Task updated successfully", response = Task.class)})
-    @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTaskById(@ApiParam(value = "Task identifier", example="1", required = true) @PathVariable("id") Long id,
+    @PutMapping("/update")
+    public ResponseEntity<Task> updateTaskById(@ApiParam(value = "Task identifier", example="1", required = true) @RequestParam("id") Long id,
                                                @ApiParam(value = "Task to update", required = true) @RequestBody Task task) {
         task.setId(id);
         return ResponseEntity.ok().body(this.taskService.updateTask(task));
@@ -64,15 +65,19 @@ public class TaskListController {
     @ApiOperation(value = "", notes = "Get a Task by ID for the current user. ", response = Task.class, tags = {})
     @ApiResponses(value = {@ApiResponse(code = 200, message = "A Task object", response = Task.class)})
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@ApiParam(value = "Task identifier",example="1", required = true) @PathVariable("id") long id) {
+    public ResponseEntity<Task> getTaskById(@ApiParam(value = "Task identifier",example="1", required = true) @PathVariable("id") Long id) {
         return ResponseEntity.ok().body(taskService.getTasktById(id));
     }
 
     @ApiOperation(value = "", notes = "Remove a Task. ", response = Void.class, tags = {})
     @ApiResponses(value = {@ApiResponse(code = 204, message = "Task deleted successfully", response = Void.class)})
     @DeleteMapping("/{id}")
-    public HttpStatus deleteTask(@ApiParam(value = "Task identifier", example="1",required = true) @PathVariable("id") Long id){
-        this.taskService.deleteTask(id);
-        return HttpStatus.OK;
+    public ResponseEntity<String> deleteTask(@ApiParam(value = "Task identifier", example="1",required = true) @PathVariable("id") Long id) {
+        try {
+            this.taskService.deleteTask(id);
+            return ResponseEntity.status(HttpStatus.OK).body("Task ID:"+id+"deleted");
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Task:%s not been deleted",id));
+        }
     }
 }

@@ -7,6 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.Format;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -38,10 +43,11 @@ public class TaskService {
         }
     }
 
-    public Task setTaskAsFinish(long taskId, Date finishDate){
+    public Task setTaskAsFinish(long taskId, String finishDate) throws ParseException {
         Optional<Task> existingTask = taskRepository.findById(taskId);
         if(existingTask.isPresent()) {
-            this.taskRepository.updateFinish(taskId,finishDate);
+            Date formatFinishDate = new SimpleDateFormat("yyyyMMdd").parse(finishDate);
+            this.taskRepository.updateFinish(taskId,formatFinishDate);
             this.taskRepository.flush();
             return taskRepository.findById(taskId).get();
         } else {

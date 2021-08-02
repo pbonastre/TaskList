@@ -2,6 +2,7 @@ package com.mimacom.taskList.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class Task implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @ApiModelProperty(notes="unique identifier of the task", example="1", required = true, position = 0)
     protected long id;
 
     @Column(nullable = false)

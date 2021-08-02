@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -39,7 +39,7 @@ public class TaskListController {
     @ApiOperation(value = "", notes = "Updates an existing Task object. ", response = Task.class, tags = {})
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Task updated successfully", response = Task.class)})
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTaskById(@ApiParam(value = "Task identifier", required = true) @PathVariable("id") Long id,
+    public ResponseEntity<Task> updateTaskById(@ApiParam(value = "Task identifier", example="1", required = true) @PathVariable("id") Long id,
                                                @ApiParam(value = "Task to update", required = true) @RequestBody Task task) {
         task.setId(id);
         return ResponseEntity.ok().body(this.taskService.updateTask(task));
@@ -47,23 +47,28 @@ public class TaskListController {
 
     @ApiOperation(value = "", notes = "Set as finish an existing task.  ", response = Task.class, tags = {})
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Task set as Finish", response = Task.class)})
-    @PutMapping("/id")
-    public ResponseEntity<Task> setTaskAsFinish(@ApiParam(value = "Task identifier", required = true) @RequestParam("id") Long id,
-                                                @ApiParam(value = "Date set for finish",example = "20210225", format="yyyyMMdd",required = true) @RequestParam Date finishDate) {
-        return ResponseEntity.ok().body(this.taskService.setTaskAsFinish(id,finishDate));
+    @PutMapping("/finish")
+    public ResponseEntity<String> setTaskAsFinish(@ApiParam(value = "Task identifier",example="1", required = true) @RequestParam("id") Long id,
+                                                @ApiParam(value = "Date set for finish",example = "20210225", format="yyyyMMdd",required = true) @RequestParam("finishDate") String finishDate) {
+        try {
+            this.taskService.setTaskAsFinish(id,finishDate);
+            return ResponseEntity.ok().body("Task set as Finish");
+        } catch (ParseException e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @ApiOperation(value = "", notes = "Get a Task by ID for the current user. ", response = Task.class, tags = {})
     @ApiResponses(value = {@ApiResponse(code = 200, message = "A Task object", response = Task.class)})
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable("id") long id) {
+    public ResponseEntity<Task> getTaskById(@ApiParam(value = "Task identifier",example="1", required = true) @PathVariable("id") long id) {
         return ResponseEntity.ok().body(taskService.getTasktById(id));
     }
 
     @ApiOperation(value = "", notes = "Remove a Task. ", response = Void.class, tags = {})
     @ApiResponses(value = {@ApiResponse(code = 204, message = "Task deleted successfully", response = Void.class)})
     @DeleteMapping("/{id}")
-    public HttpStatus deleteTask(@ApiParam(value = "Task identifier", required = true) @PathVariable("id") Long id){
+    public HttpStatus deleteTask(@ApiParam(value = "Task identifier", example="1",required = true) @PathVariable("id") Long id){
         this.taskService.deleteTask(id);
         return HttpStatus.OK;
     }

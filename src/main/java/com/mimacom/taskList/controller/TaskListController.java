@@ -56,7 +56,7 @@ public class TaskListController {
                                                 @ApiParam(value = "Date set for finish",example = "20210225", format="yyyyMMdd",required = true) @RequestParam("finishDate") String finishDate) {
         try {
             this.taskService.setTaskAsFinish(id,finishDate);
-            return ResponseEntity.ok().body("Task set as Finish");
+            return ResponseEntity.ok().body(String.format("Task:%s has been set as finished",id));
         } catch (ParseException e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -75,9 +75,9 @@ public class TaskListController {
     public ResponseEntity<String> deleteTask(@ApiParam(value = "Task identifier", example="1",required = true) @PathVariable("id") Long id) {
         try {
             this.taskService.deleteTask(id);
-            return ResponseEntity.status(HttpStatus.OK).body("Task ID:"+id+"deleted");
+            return ResponseEntity.status(HttpStatus.OK).body(String.format("Task:%s has been removed",id));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Task:%s not been deleted",id));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Task:%s has not been removed",id));
         }
     }
 }

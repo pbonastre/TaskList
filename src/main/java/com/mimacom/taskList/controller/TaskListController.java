@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/tasks")
 @RequiredArgsConstructor
 @Slf4j
-@Api(value= "taskListController", description = "There are XX microservices to create, update and delete tasks")
+@Api(value= "taskListController", description = "There are six different microservice to process a task.We could create, update and delete tasks as well as set a task to a finish state.")
 public class TaskListController {
 
     private final TaskService taskService;
@@ -29,6 +29,7 @@ public class TaskListController {
     public ResponseEntity<Task> createTask(
             @ApiParam(value = "Task to add to the list", required = true)
             @RequestBody Task task){
+        log.info("Creating task");
         return ResponseEntity.ok().body(this.taskService.createTask(task));
     }
 
@@ -42,10 +43,16 @@ public class TaskListController {
     @ApiOperation(value = "", notes = "Updates an existing Task object. ", response = Task.class, tags = {})
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Task updated successfully", response = Task.class)})
     @PutMapping("/update")
-    public ResponseEntity<Task> updateTaskById(@ApiParam(value = "Task identifier", example="1", required = true) @RequestParam("id") Long id,
+    public ResponseEntity<?> updateTaskById(@ApiParam(value = "Task identifier", example="1", required = true) @RequestParam("id") Long id,
                                                @ApiParam(value = "Task to update", required = true) @RequestBody Task task) {
-        task.setId(id);
-        return ResponseEntity.ok().body(this.taskService.updateTask(task));
+        try {
+            log.info("Updating task with ID "+ id);
+            task.setId(id);
+            return ResponseEntity.ok().body(this.taskService.updateTask(task));
+        } catch (ResourceNotFoundException e) {
+            log.error("Invalid input parameters found",e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Task:%s has not been found",id));
+        }
     }
 
     @ApiOperation(value = "", notes = "Set as finish an existing task.  ", response = Task.class, tags = {})
@@ -54,18 +61,26 @@ public class TaskListController {
     public ResponseEntity<String> setTaskAsFinish(@ApiParam(value = "Task identifier",example="1", required = true) @RequestParam("id") Long id,
                                                 @ApiParam(value = "Date set for finish",example = "20210225", format="yyyyMMdd",required = true) @RequestParam("finishDate") String finishDate) {
         try {
+            log.info("Set task ID "+id+" as finished.");
             this.taskService.setTaskAsFinish(id,finishDate);
             return ResponseEntity.ok().body(String.format("Task:%s has been set as finished",id));
         } catch (ParseException e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("Task with ID"+id+" not found", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(String.format("Could not set task %s as finished. Task does not exists.",id));
         }
     }
 
     @ApiOperation(value = "", notes = "Get a Task by ID for the current user. ", response = Task.class, tags = {})
     @ApiResponses(value = {@ApiResponse(code = 200, message = "A Task object", response = Task.class)})
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@ApiParam(value = "Task identifier",example="1", required = true) @PathVariable("id") Long id) {
-        return ResponseEntity.ok().body(taskService.getTasktById(id));
+    public ResponseEntity<?> getTaskById(@ApiParam(value = "Task identifier",example="1", required = true) @PathVariable("id") Long id) {
+        try {
+            log.info("Get task with  ID "+id);
+            return ResponseEntity.ok().body(taskService.getTasktById(id));
+        } catch (ResourceNotFoundException e) {
+            log.error("Task with ID"+id+" not found", e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Task:%s has not been found",id));
+        }
     }
 
     @ApiOperation(value = "", notes = "Remove a Task. ", response = Void.class, tags = {})
@@ -74,8 +89,10 @@ public class TaskListController {
     public ResponseEntity<String> deleteTask(@ApiParam(value = "Task identifier", example="1",required = true) @PathVariable("id") Long id) {
         try {
             this.taskService.deleteTask(id);
+            log.info("Task  ID "+id+" has been remove");
             return ResponseEntity.status(HttpStatus.OK).body(String.format("Task:%s has been removed",id));
         } catch (ResourceNotFoundException e) {
+            log.error("Task with ID"+id+" not found and could not be remove", e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Task:%s has not been removed",id));
         }
     }

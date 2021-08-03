@@ -6,10 +6,13 @@ Create a task List for create, update and delete task for a user. Each task have
 
 ### Tecnologías
 
-- [Spring Boot](https://spring.io/projects/spring-boot)
-- [Gradle](https://gradle.org/) / [Maven](https://maven.apache.org/)
-- [H2](http://www.h2database.com/html/features.html)
-- [Swagger](https://swagger.io/solutions/api-documentation/)
+- [Spring Boot](https://spring.io/projects/spring-boot) - To create standalone applications that run on their own.
+- [Gradle](https://gradle.org/)   - To automate builds, testings and deployment.
+- [H2](http://www.h2database.com/html/features.html) - Inmemory database.
+- [Swagger](https://swagger.io/solutions/api-documentation/) - For implementing the OpenApi specification.
+- [JUnit5](https://junit.org/junit5/) -
+- [Lombok](https://projectlombok.org/) - Library to reduce Java code to auto-generate all the boilerplate code during compiling time.
+- [JPA](https://spring.io/projects/spring-data-jpa) - Java specification for accessing, persisting and managing data between java objects/classes and the database.
 
 ### Installation
 

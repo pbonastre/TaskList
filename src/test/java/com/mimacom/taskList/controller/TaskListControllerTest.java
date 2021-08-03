@@ -75,7 +75,7 @@ public class TaskListControllerTest {
     @Test
     public void updateTaskById() {
         lenient().doReturn(task1).when(taskService).updateTask(any());
-        ResponseEntity<Task> response = taskListController.updateTaskById(1L, task1);
+        ResponseEntity<Task> response = (ResponseEntity<Task>) taskListController.updateTaskById(1L, task1);
         assertNotNull(response);
         assertEquals("title1", response.getBody().getTitle());
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -100,7 +100,7 @@ public class TaskListControllerTest {
     @Test
     public void getTaskById(){
         lenient().doReturn(task1).when(taskService).getTasktById(1L);
-        ResponseEntity<Task> response = taskListController.getTaskById(1L);
+        ResponseEntity<Task> response = (ResponseEntity<Task>) taskListController.getTaskById(1L);
         assertNotNull(response);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }

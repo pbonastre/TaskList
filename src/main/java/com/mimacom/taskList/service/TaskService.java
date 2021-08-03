@@ -4,6 +4,7 @@ import com.mimacom.taskList.exception.ResourceNotFoundException;
 import com.mimacom.taskList.model.Task;
 import com.mimacom.taskList.repositories.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +17,12 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class TaskService {
     private final TaskRepository taskRepository;
 
     public Task createTask(Task task) {
+        log.info("create task");
         return taskRepository.save(new Task(task.getTitle(), task.getDescription(), task.getFinish()));
     }
 
@@ -34,7 +37,8 @@ public class TaskService {
             taskRepository.saveAndFlush(exTask);
             return exTask;
         } else {
-            throw new ResourceNotFoundException("Task not found with id : " + task.getId());
+            log.error(String.format("Task with ID %s not found.",task.getId()));
+            throw new ResourceNotFoundException(String.format("Task with ID %s not found.",task.getId()));
         }
     }
 
@@ -45,7 +49,8 @@ public class TaskService {
             this.taskRepository.updateFinish(taskId, formatFinishDate);
             this.taskRepository.flush();
         } else {
-            throw new ResourceNotFoundException("Record not found with id : " + taskId);
+            log.error(String.format("Task with ID %s not found.",taskId));
+            throw new ResourceNotFoundException(String.format("Task with ID %s not found.",taskId));
         }
     }
 
@@ -59,7 +64,7 @@ public class TaskService {
         if (existingTask.isPresent()) {
             return existingTask.get();
         } else {
-            throw new ResourceNotFoundException("Record not found with id : " + taskId);
+            throw new ResourceNotFoundException(String.format("Task with ID %s not found.",taskId));
         }
     }
 
@@ -69,7 +74,7 @@ public class TaskService {
         if (existingTask.isPresent()) {
             this.taskRepository.delete(existingTask.get());
         } else {
-            throw new ResourceNotFoundException("Record not found with id : " + taskId);
+            throw new ResourceNotFoundException(String.format("Task with ID %s not found.",taskId));
         }
     }
 }

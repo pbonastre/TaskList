@@ -18,6 +18,8 @@ import java.util.Date;
 @Table(name = "TASKS")
 public class Task implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @ApiModelProperty(notes="unique identifier of the task", example="1", required = true, position = 0)

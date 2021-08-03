@@ -39,11 +39,11 @@ Table TASK will be automatically generated in H2 Database.
 
 To access to swagger page: h**ttp://localhost:8080/swagger-ui.html**
 
-![image](src\main\resources\jpg\ApiUrl.jpg) 
+![ScreenShot](https://github.com/pbonastre/taskList/blob/develop/src/main/resources/jpg/ApiUrl.jpg)
 
 You could check H2 database by accessing: **http://localhost:8080/h2-ui**
 
-![image](src\main\resources\jpg\H2console.jpg)
+![ScreenShot](https://github.com/pbonastre/taskList/blob/develop/src/main/resources/jpg/H2console.jpg)
 
 There is a **mimacomTaskList.postman_collection.json** file collection on the project root to be load in _Postman_ for a testing purpose. 
 ####How to Test?
